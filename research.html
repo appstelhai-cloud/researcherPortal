@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>פורטל חוקר – מחקרים</title>
+  <script>try{var d=document.documentElement,s=localStorage;d.dataset.theme=s.getItem('rp-theme')==='light'?'light':'dark';var f=s.getItem('rp-font');d.dataset.font=(f==='large'||f==='xl')?f:'normal';if(sessionStorage.getItem('rp-static')==='1'||/[?&]static=1/.test(location.search))d.dataset.static='1'if(s.getItem('rp-sidebar')==='hidden')d.dataset.sidebar='hidden'}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Assistant:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/boot.js" blocking="render"></script>
+</head>
+<body data-nav="research">
+  <main>
+    <p class="crumbs" id="crumbs" hidden></p>
+    <h1 id="title">מחקרים</h1>
+    <p class="muted" id="subtitle"></p>
+    <p class="asof muted" id="asof"></p>
+    <div id="view" aria-live="polite"><div class="skel-grid" role="status" aria-label="טוען"><i></i><i></i><i></i><i></i></div><div class="skel-block"></div></div>
+  </main>
+  <script type="module" src="js/research.js"></script>
+</body>
+</html>

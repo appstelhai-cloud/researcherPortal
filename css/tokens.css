@@ -1,0 +1,27 @@
+/* Design tokens copied verbatim from softreq/DESIGN-HANDOFF-softreq.md (dark default + light override).
+   This is the in-house micro-app family look (softreq / foodreq), not the raw Brandbook 2025 palette. */
+:root {
+  --th-green: #2fae6f; --th-green-deep: #1c8a54; --th-green-bright: #3fd189; --th-lime: #9fe06a;
+  --th-glow: rgba(63, 209, 137, .13);
+
+  --canvas: #1e1e1e; --canvas-2: #252526; --surface: #2d2d2d; --surface-2: #333333; --surface-3: #3c3c3c;
+  --line: #535353; --line-soft: #3e3e3e; --line-bright: #6e6e6e;
+  --ink: #e2e2e2; --ink-soft: #b8b8b8; --ink-faint: #8e8e8e;
+
+  --blue: #4fc1ff; --blue-bg: rgba(79, 193, 255, .13);
+  --amber: #e5c07b; --amber-bg: rgba(229, 192, 123, .10);
+  --purple: #c586c0; --purple-bg: rgba(197, 134, 192, .13);
+  --danger: #f44747; --danger-bg: rgba(244, 71, 71, .13);
+
+  --radius: 14px; --radius-sm: 10px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, .5), 0 10px 30px rgba(0, 0, 0, .42);
+  --on-accent: #06120c; /* dark text on green fills */
+}
+
+[data-theme="light"] {
+  --canvas: #dfeae3; --canvas-2: #d1e0d7; --surface: #eef5f0; --surface-2: #e3eee7; --surface-3: #d3e2d9;
+  --line: #7fa391; --line-soft: #a3bfb0; --line-bright: #5f8a76;
+  --ink: #0a1a12; --ink-soft: #1f3d2d; --ink-faint: #3f5f4e;
+  --th-glow: rgba(47, 174, 111, .16);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .10), 0 8px 24px rgba(0, 0, 0, .12);
+}

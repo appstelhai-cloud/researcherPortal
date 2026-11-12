@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>פורטל חוקר – קולות קוראים</title>
+  <script>try{var d=document.documentElement,s=localStorage;d.dataset.theme=s.getItem('rp-theme')==='light'?'light':'dark';var f=s.getItem('rp-font');d.dataset.font=(f==='large'||f==='xl')?f:'normal';if(sessionStorage.getItem('rp-static')==='1'||/[?&]static=1/.test(location.search))d.dataset.static='1'if(s.getItem('rp-sidebar')==='hidden')d.dataset.sidebar='hidden'}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Assistant:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/boot.js" blocking="render"></script>
+</head>
+<body data-nav="calls">
+  <main>
+    <h1 id="title">קולות קוראים</h1>
+    <p class="muted" id="subtitle"></p>
+    <p class="asof muted" id="asof"></p>
+    <div class="filters">
+      <label>חיפוש
+        <span class="search-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#254b39" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input type="search" id="q" class="search">
+        </span>
+      </label>
+    </div>
+    <div class="panel">
+      <div class="table-wrap">
+        <table id="table" class="rows">
+          <thead><tr>
+            <th scope="col">נושא</th>
+            <th scope="col" id="funder-th" class="col-funder">הגורם המממן</th>
+            <th scope="col" class="col-date">הגשה עד</th>
+            <th scope="col" class="col-more">מידע נוסף</th>
+          </tr></thead>
+          <tbody id="rows"><tr class="skel-row"><td colspan="4"><div class="skel-block short"></div></td></tr></tbody>
+        </table>
+      </div>
+      <p id="empty" hidden class="muted">לא נמצאו קולות קוראים.</p>
+    </div>
+  </main>
+  <script type="module" src="js/calls.js"></script>
+</body>
+</html>

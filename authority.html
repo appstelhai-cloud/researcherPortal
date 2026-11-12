@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>פורטל חוקר – רשות המחקר</title>
+  <script>try{var d=document.documentElement,s=localStorage;d.dataset.theme=s.getItem('rp-theme')==='light'?'light':'dark';var f=s.getItem('rp-font');d.dataset.font=(f==='large'||f==='xl')?f:'normal';if(sessionStorage.getItem('rp-static')==='1'||/[?&]static=1/.test(location.search))d.dataset.static='1'if(s.getItem('rp-sidebar')==='hidden')d.dataset.sidebar='hidden'}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Assistant:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/boot.js" blocking="render"></script>
+</head>
+<body data-nav="authority">
+  <main>
+    <h1>רשות המחקר · תמונת מצב קק״מ</h1>
+    <p class="muted" id="year"></p>
+    <p class="asof muted" id="asof"></p>
+
+    <div class="kpis" id="kpis"><div class="skel-grid" style="display:contents" role="status" aria-label="טוען"><i></i><i></i><i></i><i></i></div></div>
+
+    <div class="filters">
+      <label>מרכז מחקר
+        <select id="dept"><option value="">הכול</option></select>
+      </label>
+      <label><input type="checkbox" id="neg"> יתרה שלילית בלבד</label>
+    </div>
+
+    <div class="panel">
+      <h2>לפי חוקר</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th scope="col">חוקר/ת</th><th scope="col">מרכז מחקר</th>
+            <th scope="col" class="num">זמין</th><th scope="col" class="num">שולם</th>
+            <th scope="col" class="num">התחייבויות</th><th scope="col" class="num">יתרה</th>
+            <th scope="col">ניצול</th><th scope="col">סטטוס</th>
+          </tr></thead>
+          <tbody id="rows"><tr class="skel-row"><td colspan="8"><div class="skel-block short"></div></td></tr></tbody>
+        </table>
+      </div>
+      <p id="empty" hidden class="muted">אין חוקרים התואמים את הסינון.</p>
+      <div id="legend"></div>
+    </div>
+
+    <div class="panel">
+      <h2>הוצאות מצטברות לפי קטגוריה</h2>
+      <div id="cats"></div>
+    </div>
+  </main>
+  <script type="module" src="js/authority.js"></script>
+</body>
+</html>
