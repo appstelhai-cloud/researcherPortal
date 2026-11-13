@@ -5,6 +5,7 @@ export const FUNDING_SOURCES = [
     id: 'kkm',
     type: 'institutional_personal',
     name: 'קק״מ',
+    fullName: 'קרן קשרי מדע',
     managementUnit: 'researcher',
     periodModel: 'budget_year',
     currency: 'ILS',

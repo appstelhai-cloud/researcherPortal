@@ -250,3 +250,6 @@ table.rows td, table.rows th { overflow-wrap: anywhere; }
 table.rows tbody > tr.detail-row > td { background: var(--surface-2); border-radius: var(--radius-sm); }
 .detail-row p { margin: 0; padding: 4px 0; }
 @media (max-width: 700px) { table.rows { table-layout: auto; } }
+
+/* Joseph bubble must not cover the open mobile menu (same rule as flip) */
+body:has(.sidebar.open) #jsph-bubble-btn { display: none; }

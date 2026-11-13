@@ -36,7 +36,7 @@ function researchCard(r) {
 async function renderList() {
   document.getElementById('title').textContent = mine ? 'המחקרים שלי' : 'כל המחקרים';
   document.getElementById('subtitle').textContent = mine
-    ? 'מחקרים שאני משתתף/ת בהם. כל מחקר מנוהל בתקציב משלו, בנפרד מהקק״מ האישי.'
+    ? 'מחקרים שאני משתתף/ת בהם. כל מחקר מנוהל בתקציב משלו, בנפרד מקרן קשרי מדע (קק״מ) האישית.'
     : 'מבט כולל של רשות המחקר: מחקר הוא ישות בפני עצמה, עם כמה חוקרים.';
   const list = await repo.listResearches(mine ? { researcherId: DEMO_RESEARCHER_ID } : {});
   if (!list.length) { view.append(el('p', { class: 'muted', text: 'אין מחקרים להצגה.' })); return; }

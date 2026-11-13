@@ -22,7 +22,7 @@ root.replaceChildren();
 // One block per funding source; MVP has exactly one (KKM).
 for (const { source, summary, categoryUsed, transactions } of card.sources) {
   const section = el('section', { 'aria-labelledby': `src-${source.id}` });
-  section.append(el('h2', { id: `src-${source.id}`, text: source.name }));
+  section.append(el('h2', { id: `src-${source.id}`, text: source.fullName ? `${source.fullName} (${source.name})` : source.name }));
 
   const kpis = el('div', { class: 'kpis' },
     kpi('זמין (הקצאה + צבירה)', summary.available),
