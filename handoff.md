@@ -3,6 +3,8 @@
 Status: mockup approved for discussion, no code yet. Next step: Next.js prototype on mock data, deployed to Vercel, repo on GitHub.
 Owner: Tal, Applications Department, Tel-Hai. Audience for the first demo: Research Authority (רשות המחקר) and university management.
 
+**Current phase: concept POC for presentation only.** No real data, no database, no integrations (Priority, Quotes, monday, SSO). Everything runs on fixtures. Sections below about Mongo, adapters, sync and monday describe the *direction* to show and discuss, not work to build now.
+
 ## 1. Goal
 
 A portal where each researcher sees their personal **KKM (קק״מ, קרן קשרי מדע)** budget in one screen: available, used, open commitments, balance, and spend distribution by category. A second view gives the Research Authority an aggregate across researchers.
@@ -25,7 +27,7 @@ MVP is a **read-only mirror**. No approvals, no forms, no writes back to any sys
 
 Interpretation notes: the grouping of "later" items by color is an assumption. Budget data itself comes from Priority, so a Priority-sourced budget view is inside the MVP even though the whiteboard lists "מבט ב-Priority" separately.
 
-**Not in MVP:** monday.com integration. KKM is a personal budget, not a project budget. monday comes in with "project management", via deep links first, then read-only status.
+**Not in MVP:** monday.com integration. KKM is a personal budget, not a project budget. monday comes in with "project management", via deep links first, then read-only status. See section 4b for the revised direction (own the process data model, monday as a bridge).
 
 ## 3. Domain rules (source: KKM procedure 412-5, updated 26.6.2019)
 
@@ -97,6 +99,35 @@ Rules:
 - A grant can be shared by several researchers: model `GrantParticipant` when grants are added. Do not build it now.
 - Currency: store original currency and amount; show ILS conversion only if Accounting confirms the rate to use.
 
+## 4b. Process tracking and the monday question (direction only, not built)
+
+Context: the Research Authority works in monday today. A vendor demo ("מרחב המחקר האישי", 6 slides) showed a task-and-request tracking portal with four role views (researcher, Research Authority, advanced studies, procurement owner). It has no financial data, no integration story, no per-source rules and no permission model. Our KKM budget view covers what it lacks; it covers the process tracking we lack. They are complementary.
+
+Problem with monday as the system of record: no control over board structure changes, and working styles differ between researchers, so there is no data contract.
+
+Direction:
+- **Own the process data model** (a stable schema in our store, Mongo when a DB is introduced). Money stays in Priority; we hold process state only. An approved request is a commitment and must reconcile with Quotes and Priority.
+- Add a generic `Request` entity, separate from `Transaction`:
+
+```ts
+interface Request {
+  id: string;
+  type: string;                 // e.g. 'purchase', 'report', 'proposal', 'ethics', 'supervisor_approval'
+  researcherId: string;
+  fundingSourceId?: string;     // links to section 4a
+  status: string;               // from a per-type state machine, not free text
+  assignee: { role: string; name?: string };
+  dueDate?: string;             // deadline rules per type, owned by the Research Authority
+  history: { at: string; by: string; from: string; to: string; note?: string }[];
+  documents: { name: string; url: string }[];
+}
+```
+- **monday as a one-way bridge first:** an adapter reads boards, normalizes to `Request`, and flags schema drift. No change to how the Authority works. Move request types to native handling one at a time, simple and recurring first.
+- Do not remove monday in one step. The Authority needs a mature replacement before they leave it.
+- A process owner inside the Research Authority must own state machines and deadlines. We do not guess them.
+
+Concept-POC scope for this: show a request-tracking view (role-based task table like the vendor demo, but on our fixtures) next to the budget view. No engine, no writes, no monday call.
+
 ## 5. Data sources (all open until the Accounting meeting)
 
 | Need | Source | Status |
@@ -151,6 +182,8 @@ Personal KKM budgets are sensitive. No real researcher names or figures in the r
 9. Which other funding sources exist at Tel-Hai (external grants, startup packages, donations, commercial contracts)? Which are managed in Priority, and which in another unit or system?
 10. For grants: how are they identified in Priority (project code), can one grant have several researchers, and in what currency are they held?
 11. Which source matters most to researchers after KKM? That decides the first extension.
+12. monday: how many boards and users, who can change board structure, which request types run there, how much they really differ between researchers, is any data typed in by hand from Priority, is monday used by other units too (licence), and who in the Authority owns the process definition?
+13. Vendor: what systems does their product read from and how often, does it hold its own data, are rules configurable, what is the permission model, is it in production elsewhere, and who owns data and code after the contract?
 
 ## 11. First tasks for Claude Code
 

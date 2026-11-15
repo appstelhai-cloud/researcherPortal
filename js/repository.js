@@ -17,6 +17,7 @@
 import * as fx from './fixtures.js';
 import * as rx from './research-fixtures.js';
 import * as cx from './calls-fixtures.js';
+import * as qx from './requests-fixtures.js';
 import { kkmStrategy } from './kkm.js';
 import { grantStrategy } from './grant.js';
 import { LATENCY_MS } from './config.js';
@@ -83,6 +84,14 @@ const base = {
   },
 
   async getResearchRoles() { return rx.ROLES; },
+
+  /** Request tracking (concept). Real adapter: researchers see only their own, the Authority sees all, filtered server-side. */
+  async getRequestMeta() { return { types: qx.REQUEST_TYPES, roles: qx.ROLE_LABELS }; },
+  async listRequests({ researcherId } = {}) {
+    return qx.REQUESTS
+      .filter(r => !researcherId || r.researcherId === researcherId)
+      .map(r => ({ ...r, researcher: fx.RESEARCHERS.find(x => x.id === r.researcherId)?.name ?? '' }));
+  },
 
   async listResearcherSummaries() { return fx.RESEARCHERS.map(summarizeResearcher); },
   async getCategoryTotals() { return fx.CATEGORY_USED_ALL; }

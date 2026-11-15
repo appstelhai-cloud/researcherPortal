@@ -12,6 +12,7 @@ const key = {
   home: 'home',
   authority: 'authority',
   research: params.get('mine') === '1' || params.get('from') === 'mine' ? 'mine' : 'all',
+  requests: params.get('all') === '1' ? 'requests-all' : 'requests-mine',
   calls: `calls-${params.get('kind') === 'external' ? 'external' : 'internal'}`
 }[section];
 
@@ -27,7 +28,7 @@ if (!isStatic) {
   const s = document.createElement('script');
   s.src = JOSEPH_SRC;
   s.async = true;
-  s.dataset.dept = 'general';
+  s.dataset.dept = 'research/'; // embed.js builds <origin>/<dept>?embed=1, so the trailing slash gives /research/?embed=1
   s.dataset.theme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
   document.body.append(s);
 }

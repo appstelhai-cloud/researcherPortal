@@ -5,10 +5,12 @@ import { isStatic } from './config.js';
 const NAV = [
   { title: 'האזור שלי', items: [
     { key: 'home', href: 'index.html', text: 'התקציב שלי' },
-    { key: 'mine', href: 'research.html?mine=1', text: 'המחקרים שלי' }
+    { key: 'mine', href: 'research.html?mine=1', text: 'המחקרים שלי' },
+    { key: 'requests-mine', href: 'requests.html', text: 'הבקשות שלי' }
   ] },
   { title: 'רשות המחקר', items: [
     { key: 'authority', href: 'authority.html', text: 'תמונת מצב חוקרים' },
+    { key: 'requests-all', href: 'requests.html?all=1', text: 'מעקב בקשות' },
     { key: 'all', href: 'research.html', text: 'כל המחקרים' }
   ] },
   { title: 'מקורות מימון', items: [
@@ -23,6 +25,8 @@ const NAV = [
 const ICONS = {
   home: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14.5h2"/>',
   mine: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/>',
+  'requests-mine': '<path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1zM6 6h12v14H6zM9 12l2 2 4-4"/>',
+  'requests-all': '<path d="M8 4h8v2H8zM5 6h14v14H5zM8 11h8M8 15h5"/>',
   authority: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   all: '<path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5"/>',
   'calls-internal': '<path d="M4 10v4h3l7 4V6L7 10H4zM17.5 9a4 4 0 0 1 0 6"/>',

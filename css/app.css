@@ -93,7 +93,13 @@ main { max-width: 1060px; margin: 0; padding: 28px 28px 56px; }
 .chip, .tag { display: inline-block; padding: 2px 12px; font-size: 14px; font-weight: 700; border-radius: 999px; background: var(--surface-3); color: var(--ink-soft); }
 .chip.paid { background: var(--th-green-bright); color: var(--on-accent); }
 .chip.pending { background: var(--amber); color: var(--on-accent); }
-.chip.deficit { background: var(--danger); color: #fff; }
+.chip.deficit, .chip.late { background: var(--danger); color: #fff; }
+.chip.wait { background: var(--amber); color: var(--on-accent); }
+.chip.progress { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue); }
+[data-theme="light"] .chip.progress { color: #0b5a8a; border-color: #0b5a8a; }
+.chip.done { background: var(--th-green-bright); color: var(--on-accent); }
+.timeline { margin: 8px 0 4px; padding-inline-start: 20px; font-size: 15px; }
+.timeline li { padding: 3px 0; }
 .tag { background: var(--purple-bg); color: var(--purple); }
 [data-theme="light"] .tag { color: #7a3d76; }
 
