@@ -54,3 +54,10 @@ export function bucketize(requests, asOf, viewerRole) {
   }
   return out;
 }
+
+/** Approval route: purchases go through the procurement system, reimbursements do not (CIO meeting 16.11). */
+export function routeOf(type) {
+  if (type === 'purchase') return 'דרך מערכת הרכש';
+  if (type === 'reimbursement') return 'ללא מערכת רכש';
+  return null;
+}

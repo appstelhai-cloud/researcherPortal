@@ -128,6 +128,29 @@ interface Request {
 
 Concept-POC scope for this: show a request-tracking view (role-based task table like the vendor demo, but on our fixtures) next to the budget view. No engine, no writes, no monday call.
 
+## 4c. CIO meeting (16.11): requirements added to the concept
+
+The CIO said the mockup lacked these. All are shown as screen sketches on fixtures only; no architecture work is implied.
+
+- **Main screen = sources, projects inside, action buttons beside.** Money is earmarked per source and fund, so **no grand total anywhere**. A researcher sees only the sources relevant to them. Four source types: תקציב קליטה, קרן קשרי מדע (קק״מ), external research funds (ISF, Horizon and others), donations.
+- **Priority fields:** מעבדה, קרן, סעיף תקציבי, מחקר. **Missing field: "סוג הוצאה"**; today the "פיננסי" field is used for classification and the two must be separated. Mapping lives in a config file (`js/config-mapping.js`) and a settings screen, never hard-coded.
+- **Researcher actions:** calls for proposals; profile with interest areas for alerts; purchase request (budget item routes it to the procurement system, with approvals); reimbursement request (receipts and budget item, approvals, no procurement); progress reports to funders (documents and text); jump to the project in monday or a report from Priority.
+- **Calls for proposals are external only** and are not published on the university site. An aggregator (Workato) collects them into a fixed table; the Research Authority manages it (expose to all, or route by area); researchers get alerts by profile.
+- **monday, three options.** (1) We define board structure: risk of mismatch unless structure permissions are locked. (2) monday as database written from the portal: rejected, it duplicates monday features (mobile, notifications). (3) **Recommended:** only mandatory columns mapped in settings (due date, utilization amounts, budget, title), the rest free, dynamic API fetch, and a monitoring screen that alerts when a key column is deleted. Column names are for the Research Authority to decide.
+- **Users:** Research Authority, Finance, External Relations (internal); donors and external research partners (external). Donors: static reports and, if wanted, access limited to **actual spend of their own donations**. Donor access is an extra entity and significant work. Open: reports only, or login too. Sketches show both.
+- **Sketches in the repo:** `index.html` (sources), `source.html`, `actions.html`, `calls.html` (+ `?manage=1`), `profile.html`, `donors.html` (+ `?view=donor`), `settings.html`, `requests.html`.
+
+Open points from the meeting: donors in or out of the system; structure of "סוג הוצאה" in Priority; monday mandatory column names.
+
+### monday via API key (direction update, 17.11)
+
+The one-way bridge in 4b is superseded: the portal will **create, import and update** boards through a monday API key. Sketch: `monday.html` (fixtures in `js/monday-fixtures.js`, pure helpers in `js/monday-monitor.js`).
+- **Connection:** key stays server-side, never in the browser. Use a dedicated service-user key scoped to the Authority's boards, so it does not depend on one person.
+- **Import:** pick a board, auto-suggest the mandatory columns by name, manual pick for the rest, import blocked until all mandatory columns are mapped.
+- **Create:** from a template per source type; templates already contain the mandatory columns.
+- **Update back:** one owner per field. monday owns title, due date, budget and free columns; the portal owns utilization and request status. This avoids two-way overwrites. Writing back means the monitor from option 3 also guards writes (a missing column fails the write, as the log sketch shows).
+- Still open: who holds and rotates the key, rate limits, conflict handling if a monday user edits a portal-owned field, and whether free-form columns are ever written.
+
 ## 5. Data sources (all open until the Accounting meeting)
 
 | Need | Source | Status |
@@ -156,6 +179,9 @@ Every mockup screen carries a "demo only, fictitious data" banner. Keep that ban
 - Hebrew typographic punctuation: ״ for gershayim (קק״מ, תשפ״ז), ׳ for geresh in demo names.
 - Accessibility: text contrast 4.5:1, touch targets at least 44px, real `<table>`, `<button>`, `<a>`, never color alone (deficit has a chip plus bar color).
 - Responsive: tables scroll horizontally inside their own container, KPI grid wraps.
+
+### Accessibility widget (17.11)
+The shared module `appstelhai-cloud/accessibilityModule` (v1.1.1) is vendored at `vendor/a11y-widget.js` and loaded in the `<head>` of every page (`data-key="rp-a11y"`, anchored above the Joseph bubble, hidden while the mobile menu is open). It replaced the sidebar font-size buttons (two zoom mechanisms must not coexist); the dark/light theme toggle and the static-mockup toggle stay. Verified with the module test (`node test-widget.cjs <url>`, axe plus reflow) on all 14 pages in the default dark theme; light theme and a screen reader are not yet checked. To update: copy the new `a11y-widget.js` over the vendored file. The accessibility statement (הצהרת נגישות) is still required and is not part of the module.
 
 ## 8. Tech
 

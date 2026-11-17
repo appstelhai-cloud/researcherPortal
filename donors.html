@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>פורטל חוקר – תורמים</title>
+  <script>try{var d=document.documentElement,s=localStorage;d.dataset.theme=s.getItem('rp-theme')==='light'?'light':'dark';if(sessionStorage.getItem('rp-static')==='1'||/[?&]static=1/.test(location.search))d.dataset.static='1';if(s.getItem('rp-sidebar')==='hidden')d.dataset.sidebar='hidden'}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Assistant:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="vendor/a11y-widget.js" data-anchor="#jsph-bubble-btn" data-hide-when="#jsph-panel.jsph-open, .sidebar.open" data-invert="img.logo" data-key="rp-a11y"></script>
+  <script type="module" src="js/boot.js" blocking="render"></script>
+</head>
+<body data-nav="donors">
+  <main>
+    <h1 id="title">תורמים ותרומות</h1>
+    <p class="muted" id="subtitle"></p>
+    <p class="asof muted" id="asof"></p>
+    <nav class="action-bar no-print" aria-label="תצוגות" id="tabs">
+      <a class="btn" href="donors.html" data-tab="unit">סקירת היחידה</a>
+      <a class="btn" href="donors.html?view=reports" data-tab="reports">דוחות לתורמים</a>
+      <a class="btn" href="donors.html?view=donor" data-tab="donor">כך התורם רואה</a>
+    </nav>
+    <div class="filters no-print">
+      <label id="donor-wrap" hidden>תורם <select id="donor"></select></label>
+      <label id="coord-wrap" hidden>רכז/ת <select id="coord"><option value="">הכול</option></select></label>
+      <label id="flag-wrap" hidden><input type="checkbox" id="flagged"> דורשות טיפול בלבד</label>
+      <button class="btn" type="button" id="print" hidden>הדפסה / PDF</button>
+    </div>
+    <div id="view" aria-live="polite"><div class="skel-block"></div></div>
+    <p class="muted small no-print" id="note"></p>
+  </main>
+  <script type="module" src="js/donors.js"></script>
+</body>
+</html>

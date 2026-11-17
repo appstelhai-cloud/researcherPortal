@@ -1,7 +1,7 @@
 import { el, ltr, formatDate, formatILS } from './format.js';
 import { mockRepository as repo } from './repository.js';
 import { setAsOf } from './shell.js';
-import { bucketize, displayState, daysLeft } from './request-model.js';
+import { bucketize, displayState, daysLeft, routeOf } from './request-model.js';
 
 const all = new URLSearchParams(location.search).get('all') === '1';
 const viewerRole = all ? 'authority' : 'researcher';
@@ -52,6 +52,7 @@ function requestRows(r, n) {
   const detail = el('tr', { class: 'detail-row', id: detailId, hidden: '' },
     el('td', { colspan: String(cols) },
       el('p', { class: 'small' }, el('strong', { text: 'הפעולה הבאה: ' }), r.next),
+      routeOf(r.type) ? el('p', { class: 'small' }, el('strong', { text: 'מסלול: ' }), routeOf(r.type)) : null,
       r.amount ? el('p', { class: 'small' }, `סכום: `, ltr(formatILS(r.amount)), ` · מקור: ${r.source}`) : el('p', { class: 'small', text: `מקור: ${r.source}` }),
       historyList(r)));
   toggle.addEventListener('click', () => {

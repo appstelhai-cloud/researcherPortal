@@ -10,10 +10,17 @@ const params = new URLSearchParams(location.search);
 const section = document.body.dataset.nav;
 const key = {
   home: 'home',
+  source: 'home',
+  actions: 'home',
   authority: 'authority',
   research: params.get('mine') === '1' || params.get('from') === 'mine' ? 'mine' : 'all',
   requests: params.get('all') === '1' ? 'requests-all' : 'requests-mine',
-  calls: `calls-${params.get('kind') === 'external' ? 'external' : 'internal'}`
+  calls: params.get('manage') === '1' ? 'admin' : 'calls',
+  profile: null,
+  donors: { donor: 'donor', reports: 'donor-reports' }[params.get('view')] ?? 'donors-unit',
+  settings: 'admin',
+  monday: 'admin',
+  admin: 'admin'
 }[section];
 
 buildShell(key);

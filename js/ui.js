@@ -24,6 +24,15 @@ export function utilizationBar(summary, { small = false } = {}) {
   return bar;
 }
 
+/** Utilization bar with a tick at the share of the period already elapsed (plan vs actual). */
+export function paceBar(summary, elapsed) {
+  const tick = el('i', { class: 'pace-mark', 'aria-hidden': 'true' });
+  tick.style.left = `${Math.round(elapsed * 100)}%`;
+  return el('div', {},
+    el('div', { class: 'pace' }, utilizationBar(summary, { small: true }), tick),
+    el('span', { class: 'muted small', text: `ניצול ${formatPercent(summary.utilization)} · זמן ${formatPercent(elapsed)}` }));
+}
+
 export function legend() {
   return el('div', { class: 'legend' },
     el('span', {}, el('i', { class: 'u' }), 'שולם'),

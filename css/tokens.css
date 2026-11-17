@@ -6,11 +6,11 @@
 
   --canvas: #1e1e1e; --canvas-2: #252526; --surface: #2d2d2d; --surface-2: #333333; --surface-3: #3c3c3c;
   --line: #535353; --line-soft: #3e3e3e; --line-bright: #6e6e6e;
-  --ink: #e2e2e2; --ink-soft: #b8b8b8; --ink-faint: #8e8e8e;
+  --ink: #e2e2e2; --ink-soft: #b8b8b8; --ink-faint: #a8a8a8;
 
   --blue: #4fc1ff; --blue-bg: rgba(79, 193, 255, .13);
   --amber: #e5c07b; --amber-bg: rgba(229, 192, 123, .10);
-  --purple: #c586c0; --purple-bg: rgba(197, 134, 192, .13);
+  --purple: #dcaad8; --purple-bg: rgba(197, 134, 192, .13);
   --danger: #f44747; --danger-bg: rgba(244, 71, 71, .13);
 
   --radius: 14px; --radius-sm: 10px;
