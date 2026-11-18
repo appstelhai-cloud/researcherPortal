@@ -7,9 +7,12 @@ import { el, formatMoney, formatDate } from './format.js';
 import { mockRepository as repo } from './repository.js';
 import { paceFlag, daysBetween } from './pace.js';
 import { tasksOf } from './donors-logic.js';
+import { ALERT_GROUPS, readRules, isOn } from './alert-rules.js';
+import { daysLate, daysLeft, STATUSES } from './request-model.js';
 
 const DEMO_RESEARCHER_ID = 'a';
-export const GROUPS = { mine: 'אצלי כחוקר/ת', authority: 'רשות המחקר', donors: 'קשרי חוץ וגיוס תורמים' };
+export const GROUPS = ALERT_GROUPS;
+const DUE_WINDOW_DAYS = 14;
 
 /* ---------- derivation ---------- */
 
@@ -19,16 +22,32 @@ async function mineItems() {
   for (const g of groups) for (const i of g.items) {
     const s = i.summary, end = i.period?.end ?? year.end, left = daysBetween(asOf, end);
     const name = i.kind === 'research' ? i.title : g.label;
-    if (s.isDeficit) out.push({ id: `mine:${i.id}:deficit`, rank: 0, tone: 'bad', title: `${name}: גירעון`, text: `חריגה של ${formatMoney(Math.abs(s.balance), s.currency)}. לטיפול מול המממן.`, action: ['לפירוט', i.href] });
-    if (i.id === 'kkm' && s.balance > 0 && left <= 365) out.push({ id: 'mine:kkm:unused', rank: 10 + left, tone: left <= 120 ? 'warn' : 'info',
+    if (s.isDeficit) out.push({ id: `mine:${i.id}:deficit`, rule: 'mine-deficit', rank: 0, tone: 'bad', title: `${name}: גירעון`, text: `חריגה של ${formatMoney(Math.abs(s.balance), s.currency)}. לטיפול מול המממן.`, action: ['לפירוט', i.href] });
+    if (i.id === 'kkm' && s.balance > 0 && left <= 365) out.push({ id: 'mine:kkm:unused', rule: 'kkm-unused', rank: 10 + left, tone: left <= 120 ? 'warn' : 'info',
       title: 'יתרה בקק״מ לניצול', text: `${formatMoney(s.balance, s.currency)} פגים ב-${formatDate(end)} (בעוד ${left} ימים).`, action: ['בקשת רכש', 'actions.html?type=purchase&source=kkm'] });
-    else if (i.id !== 'kkm' && left >= 0 && left <= 180) out.push({ id: `mine:${i.id}:ending`, rank: 20 + left, tone: 'warn', title: `${name}: ההקצאה מסתיימת`, text: `בעוד ${left} ימים, ב-${formatDate(end)}.`, action: ['לפירוט', i.href] });
+    else if (i.id !== 'kkm' && left >= 0 && left <= 180) out.push({ id: `mine:${i.id}:ending`, rule: 'allocation-ending', rank: 20 + left, tone: 'warn', title: `${name}: ההקצאה מסתיימת`, text: `בעוד ${left} ימים, ב-${formatDate(end)}.`, action: ['לפירוט', i.href] });
   }
   for (const type of ['kkm', 'intake']) {
     const d = await repo.getSourceDetail(DEMO_RESEARCHER_ID, type).catch(() => null);
     const open = d?.transactions.filter(t => t.status === 'approved_unpaid') ?? [];
-    if (open.length) out.push({ id: `mine:${type}:open`, rank: 500, tone: 'info', title: `${type === 'kkm' ? 'קק״מ' : 'תקציב קליטה'}: התחייבויות פתוחות`,
+    if (open.length) out.push({ id: `mine:${type}:open`, rule: 'open-commitments', rank: 500, tone: 'info', title: `${type === 'kkm' ? 'קק״מ' : 'תקציב קליטה'}: התחייבויות פתוחות`,
       text: `${open.length} הזמנות מאושרות, ${formatMoney(open.reduce((a, t) => a + t.amount, 0))} עדיין לא שולמו.`, action: ['לתנועות', `source.html?id=${type}`] });
+  }
+  // Money coming IN from a funder (not only spend), recent first.
+  const asOfDate = asOf.slice(0, 10);
+  for (const f of await repo.listIncomingFunds(DEMO_RESEARCHER_ID)) {
+    const ago = daysBetween(f.date, asOfDate);
+    if (ago >= 0 && ago <= 30) out.push({ id: `mine:funds:${f.id}`, rule: 'funds-in', rank: 30 + ago, tone: 'good',
+      title: `נכנס כסף מ${f.funder}`, text: `${formatMoney(f.amount, f.currency)} ל${f.title} ב-${formatDate(f.date)}. ${f.note}`, action: ['לפרויקט', f.href] });
+  }
+  // Deadlines come with the next action, e.g. "דוח התקדמות באיחור" + what to do now.
+  const [reqs, meta] = await Promise.all([repo.listRequests({ researcherId: DEMO_RESEARCHER_ID }), repo.getRequestMeta()]);
+  for (const q of reqs) {
+    if (q.assignee.role !== 'researcher' || !STATUSES[q.status]?.open) continue;
+    const late = daysLate(q, asOf), left = daysLeft(q, asOf);
+    const base = { id: `mine:req:${q.id}`, rule: 'request-due', text: `${q.title}. הפעולה הבאה: ${q.next}.`, action: ['לבקשה', 'requests.html'] };
+    if (late > 0) out.push({ ...base, rank: 1, tone: 'bad', title: `${meta.types[q.type]} באיחור של ${late} ימים` });
+    else if (q.dueDate && left <= DUE_WINDOW_DAYS) out.push({ ...base, rank: 2 + left, tone: left <= 7 ? 'warn' : 'info', title: `${meta.types[q.type]}: עוד ${left} ימים להגשה` });
   }
   return out;
 }
@@ -44,9 +63,19 @@ async function authorityItems() {
     const over = bucket(i => !i.summary.isDeficit && paceFlag(i.summary.utilization, i.elapsed) === 'over');
     const under = bucket(i => paceFlag(i.summary.utilization, i.elapsed) === 'under');
     const go = ['לבדיקה', 'authority.html?risk=1'];
-    if (deficit.length) out.push({ id: `auth:${type}:deficit`, rank: 0, tone: 'bad', title: `${meta.label}: ${deficit.length} בגירעון`, text: list(deficit), action: go });
-    if (over.length) out.push({ id: `auth:${type}:over`, rank: 5, tone: 'warn', title: `${meta.label}: ${over.length} מוציאים מהר מהזמן`, text: list(over), action: go });
-    if (under.length) out.push({ id: `auth:${type}:under`, rank: 50, tone: 'info', title: `${meta.label}: ${under.length} מוציאים לאט מהזמן`, text: list(under), action: go });
+    if (deficit.length) out.push({ id: `auth:${type}:deficit`, rule: 'auth-deficit', rank: 0, tone: 'bad', title: `${meta.label}: ${deficit.length} בגירעון`, text: list(deficit), action: go });
+    if (over.length) out.push({ id: `auth:${type}:over`, rule: 'auth-over', rank: 5, tone: 'warn', title: `${meta.label}: ${over.length} מוציאים מהר מהזמן`, text: list(over), action: go });
+    if (under.length) out.push({ id: `auth:${type}:under`, rule: 'auth-under', rank: 50, tone: 'info', title: `${meta.label}: ${under.length} מוציאים לאט מהזמן`, text: list(under), action: go });
+  }
+  const [reqs, meta] = await Promise.all([repo.listRequests(), repo.getRequestMeta()]);
+  const asOf = await repo.getAsOf();
+  for (const q of reqs) {
+    if (q.assignee.role !== 'authority' || !STATUSES[q.status]?.open) continue;
+    const late = daysLate(q, asOf), left = daysLeft(q, asOf);
+    if (late === 0 && !(q.dueDate && left <= 7)) continue;
+    out.push({ id: `auth:req:${q.id}`, rule: 'auth-request-due', rank: late > 0 ? 1 : 3 + left, tone: late > 0 ? 'bad' : 'warn',
+      title: `${meta.types[q.type]} ממתינה לרשות המחקר: ${late > 0 ? `באיחור של ${late} ימים` : `עוד ${left} ימים`}`,
+      text: `${q.researcher}: ${q.title}. הפעולה הבאה: ${q.next}.`, action: ['למעקב', 'requests.html?all=1'] });
   }
   return out;
 }
@@ -54,14 +83,15 @@ async function authorityItems() {
 async function donorItems() {
   const rows = await repo.listDonationsOverview();
   return rows.flatMap(tasksOf).map(t => ({
-    id: t.id, rank: t.rank, tone: t.tone, title: `${t.row.donor} · ${t.row.title}`, text: `${t.text} (${t.row.coordinator})`,
+    id: t.id, rule: 'donor-tasks', rank: t.rank, tone: t.tone, title: `${t.row.donor} · ${t.row.title}`, text: `${t.text} (${t.row.coordinator})`,
     action: t.action ?? ['לתרומה', 'donors.html']
   }));
 }
 
-export async function loadNotifications() {
+/** `choices` = saved on/off per alert rule (see alert-rules.js); a rule that is off never reaches the bell. */
+export async function loadNotifications(choices = readRules()) {
   const [mine, authority, donors] = await Promise.all([mineItems(), authorityItems(), donorItems()]);
-  const tag = (list, group) => list.map(n => ({ ...n, group })).sort((a, b) => a.rank - b.rank);
+  const tag = (list, group) => list.filter(n => isOn(n.rule, choices)).map(n => ({ ...n, group })).sort((a, b) => a.rank - b.rank);
   return [...tag(mine, 'mine'), ...tag(authority, 'authority'), ...tag(donors, 'donors')];
 }
 

@@ -59,3 +59,20 @@ export function categoryList(totals, labels, caps = {}) {
   }
   return wrap;
 }
+
+/**
+ * Actions that start from a funding source or project (CIO round 17.11): "רכש חדש" and "פתח פרויקט".
+ * The request opens on THIS source automatically (`source` param), so the researcher never picks the budget by hand.
+ * "פתח פרויקט" is a sketch: no monday call in the demo.
+ */
+export function sourceActions(sourceId) {
+  const note = el('p', { class: 'muted small', role: 'status' });
+  const open = el('button', { class: 'btn', type: 'button', text: 'פתח פרויקט' });
+  open.addEventListener('click', () => { note.textContent = 'בהדגמה אין חיבור: כאן ייפתח פרויקט ב-Monday, מתבנית של סוג המקור הזה.'; });
+  return el('div', { class: 'source-actions' },
+    el('nav', { class: 'action-bar', 'aria-label': 'פעולות במקור הזה' },
+      el('a', { class: 'btn primary', href: `actions.html?type=purchase&source=${encodeURIComponent(sourceId)}`, text: 'רכש חדש' }),
+      open,
+      el('a', { class: 'btn', href: `actions.html?type=reimbursement&source=${encodeURIComponent(sourceId)}`, text: 'בקשת החזר' })),
+    note);
+}

@@ -26,8 +26,12 @@
           <input type="search" id="q" class="search">
         </span>
       </label>
-      <label>סוג בקשה <select id="type"><option value="">הכול</option></select></label>
+      <label>מצב <select id="state">
+        <option value="">הכול</option><option value="late">באיחור</option><option value="mine">ממתין לי</option><option value="other">בטיפול גורם אחר</option>
+      </select></label>
     </div>
+    <div id="type-filter" class="type-filter" role="group" aria-label="סוג בקשה"></div>
+    <p id="round-note" class="muted small" role="status"></p>
     <div class="panel">
       <div class="table-wrap">
         <table id="table" class="rows">

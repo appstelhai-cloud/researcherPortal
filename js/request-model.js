@@ -59,5 +59,39 @@ export function bucketize(requests, asOf, viewerRole) {
 export function routeOf(type) {
   if (type === 'purchase') return 'דרך מערכת הרכש';
   if (type === 'reimbursement') return 'ללא מערכת רכש';
+  if (type === 'proposal') return `סבב אישורים: ${APPROVAL_ROUND.map(s => s.label).join(' ← ')}`;
   return null;
+}
+
+/** Approval round of a research proposal (illustrative order: the Research Authority owns the real one). */
+export const APPROVAL_ROUND = [
+  { role: 'dept_head', label: 'ראש/ת החוג' },
+  { role: 'dean', label: 'דיקן/ית' },
+  { role: 'authority', label: 'רשות המחקר' },
+  { role: 'finance', label: 'יחידת הכספים' }
+];
+
+/** Only a proposal still in the researcher's hands can start a round. */
+export function canOpenRound(req) {
+  return req.type === 'proposal' && req.status === 'waiting_researcher';
+}
+
+/** Pure: the request after the researcher opens the round. It goes to the first approver; history keeps the step. */
+export function openApprovalRound(req, asOf, by = 'חוקר/ת א׳') {
+  if (!canOpenRound(req)) throw new Error('approval round cannot be opened for this request');
+  const first = APPROVAL_ROUND[0];
+  return {
+    ...req, status: 'waiting_approval', assignee: { role: first.role }, next: `להמתין לאישור ${first.label}`,
+    history: [...req.history, { at: asOf.slice(0, 10), by, from: STATUSES[req.status].label, to: STATUSES.waiting_approval.label, note: 'נפתח סבב אישורים' }]
+  };
+}
+
+/** Filter by who holds the request or lateness, from the viewer's side. key: '' | 'late' | 'mine' | 'other'. */
+export function matchesState(req, asOf, viewerRole, key) {
+  if (!key) return true;
+  if (!STATUSES[req.status]?.open) return false;
+  const late = daysLate(req, asOf) > 0;
+  if (key === 'late') return late;
+  if (late) return false;
+  return key === 'mine' ? req.assignee.role === viewerRole : req.assignee.role !== viewerRole;
 }

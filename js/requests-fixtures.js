@@ -13,6 +13,8 @@ export const REQUEST_TYPES = {
 
 export const ROLE_LABELS = {
   researcher: 'חוקר/ת',
+  dept_head: 'ראש/ת החוג',
+  dean: 'דיקן/ית',
   authority: 'רשות המחקר',
   procurement: 'אחראי רכש',
   ethics: 'ועדת אתיקה',

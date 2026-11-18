@@ -35,13 +35,15 @@ document.getElementById('path-note').textContent = flow.note;
 
 // Choices: the researcher's own sources and projects (only relevant ones), each with its own budget items.
 const groups = await repo.listSourcesForResearcher(DEMO_RESEARCHER_ID);
-const choices = groups.flatMap(g => g.items.map(i => ({ key: `${g.type}:${i.id}`, type: g.type, label: `${g.label}: ${i.title}` })));
+const choices = groups.flatMap(g => g.items.map(i => ({ key: i.id, type: g.type, label: `${g.label}: ${i.title}` })));
 const itemsByType = Object.fromEntries(await Promise.all(groups.map(async g => [g.type, await repo.getBudgetItems(g.type)])));
 
 const form = document.getElementById('form');
 const field = (id, label, control) => el('div', { class: 'field' }, el('label', { for: id, text: label }), control);
 
-const source = el('select', { id: 'source', required: '' }, ...choices.map(c => el('option', { value: c.key, text: c.label })));
+// Arriving from a source screen: the request is opened on that source, no manual choice. Without it (direct link) a picker stays.
+const fixed = choices.find(c => c.key === new URLSearchParams(location.search).get('source'));
+const source = el('select', { id: 'source', required: '' }, ...(fixed ? [fixed] : choices).map(c => el('option', { value: c.key, text: c.label })));
 const item = el('select', { id: 'item' });
 const fillItems = () => {
   const t = choices.find(c => c.key === source.value).type;
@@ -50,7 +52,10 @@ const fillItems = () => {
 source.addEventListener('change', fillItems);
 fillItems();
 
-form.append(field('source', 'מקור מימון', source));
+if (fixed) {
+  source.hidden = true;
+  form.append(el('div', { class: 'field' }, el('span', { class: 'lbl-fixed', text: 'מקור מימון' }), el('div', { class: 'fixed-source', text: fixed.label }), el('p', { class: 'muted small', text: 'הבקשה נפתחת אוטומטית על המקור שממנו הגעת.' }), source));
+} else form.append(field('source', 'מקור מימון', source));
 if (type !== 'report') form.append(field('item', 'סעיף תקציבי', item));
 if (type === 'purchase') {
   form.append(

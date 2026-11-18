@@ -2,6 +2,7 @@ import { el, ltr, formatDate } from './format.js';
 import { mockRepository as repo } from './repository.js';
 import { setAsOf } from './shell.js';
 import { missing } from './monday-monitor.js';
+import { ALERT_GROUPS, ALERT_RULES, readRules, writeRules, isOn } from './alert-rules.js';
 
 await setAsOf();
 const [map, monitor] = await Promise.all([repo.getMapping(), repo.getMondayMonitor()]);
@@ -41,3 +42,20 @@ view.append(panel('משתמשים חיצוניים',
   el('p', { class: 'muted small', text: 'שותפי מחקר מחוץ לאוניברסיטה ותורמים. כל משתמש חיצוני רואה רק את מה שהוא צד לו.' }),
   table(['שם', 'סוג', 'היקף גישה', 'מצב'], map.externalUsers.map(u => el('tr', {},
     el('th', { scope: 'row', text: u.name }), el('td', { text: u.kind }), el('td', { text: u.scope }), el('td', { text: u.status }))))));
+
+// 5. Alerts: which ones the action center (bell) shows. A choice is saved per browser here; a real adapter saves it per user.
+const choices = readRules();
+const alertRows = ALERT_RULES.map(r => {
+  const box = el('input', { type: 'checkbox', id: `rule-${r.key}` });
+  box.checked = isOn(r.key, choices);
+  box.addEventListener('change', () => { choices[r.key] = box.checked; writeRules(choices); });
+  return el('tr', {},
+    el('td', {}, box),
+    el('th', { scope: 'row' }, el('label', { for: box.id, text: r.label })),
+    el('td', {}, el('span', { class: 'tag', text: r.kind })),
+    el('td', { text: ALERT_GROUPS[r.group] }),
+    el('td', { class: 'muted small', text: r.desc }));
+});
+view.append(panel('התראות: מה מוצג במרכז הפעולות',
+  el('p', { class: 'muted small', text: 'ההתראות כוללות הוצאות, כסף שנכנס מקרנות, ומועדי הגשה יחד עם הפעולה הבאה (למשל "דוח התקדמות באיחור"). כל אחת ניתנת להפעלה או לכיבוי. השינוי חל בטעינה הבאה של הדף.' }),
+  table(['מוצגת', 'התראה', 'סוג', 'תפקיד', 'מתי'], alertRows)));

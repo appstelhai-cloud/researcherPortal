@@ -128,6 +128,33 @@ const base = {
       categoryUsed: {}, transactions: researcherId === 'a' ? fx.TRANSACTIONS_INTAKE_A : []
     };
   },
+  /**
+   * Every transaction across the researcher's sources and projects, flattened for the cross-source analysis.
+   * expenseType is the proposed Priority field "סוג הוצאה". Real adapter: one Priority query, filtered by identity server-side.
+   */
+  async listAllTransactions(researcherId) {
+    const groups = await base.listSourcesForResearcher(researcherId);
+    const expense = Object.fromEntries(fx.EXPENSE_TYPES.map(e => [e.key, e.label]));
+    const rows = [];
+    for (const g of groups) for (const item of g.items) {
+      if (item.kind === 'research') {
+        const res = rx.RESEARCHES.find(x => x.id === item.id);
+        for (const t of res.transactions) rows.push({ date: t.date, description: t.description, sourceId: item.id, sourceLabel: item.title, expenseType: expense[t.expenseType], currency: res.currency, status: t.status, amount: t.amount });
+      } else {
+        const d = await base.getSourceDetail(researcherId, item.id);
+        for (const t of d.transactions) rows.push({ date: t.date, description: t.description, sourceId: item.id, sourceLabel: item.title, expenseType: t.expenseType, currency: item.summary.currency ?? 'ILS', status: t.status, amount: t.amount });
+      }
+    }
+    return rows.sort((a, b) => b.date.localeCompare(a.date));
+  },
+  /** Money received from funders into the researcher's projects. Real adapter: Priority receipts. */
+  async listIncomingFunds(researcherId) {
+    return rx.INCOMING_FUNDS
+      .map(f => ({ f, res: rx.RESEARCHES.find(x => x.id === f.researchId) }))
+      .filter(({ res }) => res.participants.some(p => p.id === researcherId))
+      .map(({ f, res }) => ({ ...f, title: res.title, funder: res.funder, href: `research.html?id=${res.id}&from=mine` }));
+  },
+  async getExpenseTypes() { return fx.EXPENSE_TYPES.map(e => e.label); },
   async getSourceTypes() { return fx.SOURCE_TYPES; },
   async getBudgetItems(type) { return fx.BUDGET_ITEMS[type] ?? []; },
 

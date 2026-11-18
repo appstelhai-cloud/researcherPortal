@@ -1,7 +1,7 @@
 import { el, ltr, formatMoney, formatPercent, formatDate } from './format.js';
 import { mockRepository as repo } from './repository.js';
 import { setAsOf } from './shell.js';
-import { kpi, utilizationBar, legend, deficitChip } from './ui.js';
+import { kpi, utilizationBar, legend, deficitChip, sourceActions } from './ui.js';
 
 const DEMO_RESEARCHER_ID = 'a'; // real adapter: derived server-side from SSO identity
 const params = new URLSearchParams(location.search);
@@ -53,6 +53,7 @@ async function renderDetail() {
   crumbs.hidden = false;
   crumbs.append(el('a', { href: mine ? 'research.html?mine=1' : 'research.html', text: mine ? 'המחקרים שלי' : 'כל המחקרים' }));
 
+  if (mine) view.append(sourceActions(r.id));
   view.append(el('div', { class: 'kpis' },
     kpi('תקציב המחקר', s.available, { currency: s.currency }),
     kpi('שולם', s.used, { currency: s.currency }),

@@ -18,3 +18,25 @@ test('action center: covers researcher, authority and donor-relations work', asy
   assert.ok(all.some(n => n.id === 'mine:kkm:unused'));
   assert.ok(all.some(n => n.id === 'don:r4:overdue'));
 });
+
+test('action center: money coming in from a funder is an alert, not only spend', async () => {
+  const all = await loadNotifications({});
+  const funds = all.filter(n => n.rule === 'funds-in');
+  assert.ok(funds.length > 0);
+  assert.ok(funds.every(n => n.group === 'mine' && n.title.startsWith('נכנס כסף')));
+});
+
+test('action center: a late deadline states the late request type and the next action', async () => {
+  const all = await loadNotifications({});
+  const late = all.find(n => n.id === 'mine:req:q1');
+  assert.ok(late.title.includes('דוח למממן') && late.title.includes('באיחור'));
+  assert.ok(late.text.includes('הפעולה הבאה'));
+});
+
+test('action center: turning a rule off removes its alerts; defaults apply with no saved choice', async () => {
+  const off = await loadNotifications({ 'funds-in': false, 'request-due': false });
+  assert.ok(!off.some(n => n.rule === 'funds-in' || n.rule === 'request-due'));
+  const dflt = await loadNotifications({});
+  assert.ok(!dflt.some(n => n.rule === 'open-commitments'), 'open commitments are off by default');
+  assert.ok(dflt.some(n => n.rule === 'funds-in'));
+});

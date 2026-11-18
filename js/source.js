@@ -1,7 +1,7 @@
 import { el, ltr, formatILS, formatMoney, formatPercent, formatDate } from './format.js';
 import { mockRepository as repo } from './repository.js';
 import { setAsOf } from './shell.js';
-import { kpi, utilizationBar, legend, deficitChip, categoryList } from './ui.js';
+import { kpi, utilizationBar, legend, deficitChip, categoryList, sourceActions } from './ui.js';
 import { MAPPING } from './config-mapping.js';
 
 const DEMO_RESEARCHER_ID = 'a'; // real adapter: derived server-side from SSO identity
@@ -17,6 +17,7 @@ document.getElementById('subtitle').textContent = `${detail.researcher.name} · 
 const root = document.getElementById('sources');
 root.replaceChildren();
 const section = el('section');
+section.append(sourceActions(id));
 
 section.append(el('div', { class: 'kpis' },
   kpi(id === 'kkm' ? 'זמין (הקצאה + צבירה)' : 'תקציב הקליטה', summary.available, { currency: summary.currency }),

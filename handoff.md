@@ -151,6 +151,15 @@ The one-way bridge in 4b is superseded: the portal will **create, import and upd
 - **Update back:** one owner per field. monday owns title, due date, budget and free columns; the portal owns utilization and request status. This avoids two-way overwrites. Writing back means the monitor from option 3 also guards writes (a missing column fails the write, as the log sketch shows).
 - Still open: who holds and rotates the key, rate limits, conflict handling if a monday user edits a portal-owned field, and whether free-form columns are ever written.
 
+### Mockup decisions (18.11)
+
+- **Main screen:** budget rows and amounts only, list view (no tiles). Removed: recent movements, the action bar, "פתח פרויקט", "הפק דוח".
+- **Actions live inside each source/project screen** (`source.html`, `research.html?id=..&from=mine`): "רכש חדש", "פתח פרויקט" (sketch), "בקשת החזר". The request opens on that source automatically (`actions.html?source=<id>`), no manual choice.
+- **Instead of "הפק דוח":** `analysis.html` – spend across all sources by expense type, source and dates. Totals are per currency, never mixed (pure logic in `js/analysis-logic.js`).
+- **Alerts:** the catalog of alert rules is `js/alert-rules.js`, switched on/off in `settings.html` (per browser in the demo). New: money received from a funder, and deadlines shown with the next action (e.g. late funder report).
+- **"הבקשות שלי":** type chips with counts plus a state filter. A research proposal can "פתח סבב אישורים" (illustrative round: dept head, dean, Research Authority, Finance; the Authority owns the real one).
+- **Not found in the code:** "תקציב קליטה – סולם" – nothing with that name exists in the mockup; confirm which screen was meant.
+
 ## 5. Data sources (all open until the Accounting meeting)
 
 | Need | Source | Status |
