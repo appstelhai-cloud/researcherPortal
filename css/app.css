@@ -395,3 +395,15 @@ table.matrix td, table.matrix th { vertical-align: top; }
 .round-steps li::before { content: counter(step) ". "; }
 .round-steps li.now { border-color: var(--th-green-bright); background: var(--th-glow); font-weight: 700; color: var(--ink); }
 .round-steps li.past { text-decoration: line-through; opacity: .7; }
+
+/* Financial status: card-statement style lines */
+.tx-block { padding: 0; overflow: hidden; }
+.tx-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding: 14px 18px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.tx-head h2 { margin: 0; font-size: 18px; }
+.tx-list { list-style: none; margin: 0; padding: 0; }
+.tx { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--line-soft); }
+.tx:last-child { border-bottom: 0; }
+.tx-date { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.tx-date strong { font-size: 20px; }
+.tx-desc { font-weight: 700; overflow-wrap: anywhere; }
+.tx-amt { font-weight: 700; font-size: 17px; text-align: start; }

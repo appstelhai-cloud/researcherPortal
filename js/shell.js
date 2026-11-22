@@ -7,7 +7,7 @@ const NAV = [
     { key: 'home', href: 'index.html', text: 'המקורות שלי' },
     { key: 'mine', href: 'research.html?mine=1', text: 'המחקרים שלי' },
     { key: 'requests-mine', href: 'requests.html', text: 'הבקשות שלי' },
-    { key: 'analysis', href: 'analysis.html', text: 'ניתוח הוצאות' },
+    { key: 'finance', href: 'finance.html', text: 'סטטוס פיננסי' },
     { key: 'calls', href: 'calls.html', text: 'קולות קוראים' }
   ] },
   { title: 'רשות המחקר', items: [
@@ -36,7 +36,7 @@ const ICONS = {
   calls: '<path d="M4 10v4h3l7 4V6L7 10H4zM17.5 9a4 4 0 0 1 0 6"/>',
   'calls-manage': '<path d="M4 10v4h3l7 4V6L7 10H4zM17.5 9a4 4 0 0 1 0 6M20 4v4M18 6h4"/>',
   profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
-  analysis: '<path d="M4 19h16M6 16l4-5 3 3 5-7"/>',
+  finance: '<path d="M4 19h16M6 16l4-5 3 3 5-7"/>',
   authority: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   all: '<path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5"/>',
   donors: '<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/>',

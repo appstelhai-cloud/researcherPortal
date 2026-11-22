@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>פורטל חוקר – ניתוח הוצאות</title>
+  <title>פורטל חוקר – סטטוס פיננסי</title>
   <script>try{var d=document.documentElement,s=localStorage;d.dataset.theme=s.getItem('rp-theme')==='light'?'light':'dark';if(sessionStorage.getItem('rp-static')==='1'||/[?&]static=1/.test(location.search))d.dataset.static='1';if(s.getItem('rp-sidebar')==='hidden')d.dataset.sidebar='hidden'}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,14 +13,14 @@
   <script src="vendor/a11y-widget.js" data-anchor="#jsph-bubble-btn" data-hide-when="#jsph-panel.jsph-open, .sidebar.open" data-invert="img.logo" data-key="rp-a11y"></script>
   <script type="module" src="js/boot.js" blocking="render"></script>
 </head>
-<body data-nav="analysis">
+<body data-nav="finance">
   <main>
-    <h1>ניתוח הוצאות</h1>
-    <p class="muted">שאלה אחת על כל המקורות והפרויקטים: כמה הוצאתי על ציוד מעבדה, על נסיעות או על שכר. הסכומים מוצגים לפי מטבע ולא מחוברים בין מקורות.</p>
+    <h1>סטטוס פיננסי</h1>
+    <p class="muted">פירוט התנועות מכל מקורות המימון והפרויקטים, כמו פירוט בכרטיס אשראי. הסכומים מוצגים לפי מטבע ולא מחוברים בין מקורות.</p>
     <p class="asof muted" id="asof"></p>
     <div class="panel" id="controls"></div>
     <div id="view" aria-live="polite"></div>
   </main>
-  <script type="module" src="js/analysis.js"></script>
+  <script type="module" src="js/finance.js"></script>
 </body>
 </html>
