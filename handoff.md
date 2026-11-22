@@ -138,7 +138,7 @@ The CIO said the mockup lacked these. All are shown as screen sketches on fixtur
 - **Calls for proposals are external only** and are not published on the university site. An aggregator (Workato) collects them into a fixed table; the Research Authority manages it (expose to all, or route by area); researchers get alerts by profile.
 - **monday, three options.** (1) We define board structure: risk of mismatch unless structure permissions are locked. (2) monday as database written from the portal: rejected, it duplicates monday features (mobile, notifications). (3) **Recommended:** only mandatory columns mapped in settings (due date, utilization amounts, budget, title), the rest free, dynamic API fetch, and a monitoring screen that alerts when a key column is deleted. Column names are for the Research Authority to decide.
 - **Users:** Research Authority, Finance, External Relations (internal); donors and external research partners (external). Donors: static reports and, if wanted, access limited to **actual spend of their own donations**. Donor access is an extra entity and significant work. Open: reports only, or login too. Sketches show both.
-- **Sketches in the repo:** `index.html` (sources), `source.html`, `actions.html`, `calls.html` (+ `?manage=1`), `profile.html`, `donors.html` (+ `?view=donor`), `settings.html`, `requests.html`.
+- **Sketches in the repo:** `index.html` (sources), `source.html`, `actions.html`, `calls.html` (+ `?manage=1`), `profile.html`, `donors.html` (+ `?view=donor`), `settings.html` (+ alert rules), `requests.html`, `finance.html` (financial status).
 
 Open points from the meeting: donors in or out of the system; structure of "סוג הוצאה" in Priority; monday mandatory column names.
 
@@ -155,9 +155,10 @@ The one-way bridge in 4b is superseded: the portal will **create, import and upd
 
 - **Main screen:** budget rows and amounts only, list view (no tiles). Removed: recent movements, the action bar, "פתח פרויקט", "הפק דוח".
 - **Actions live inside each source/project screen** (`source.html`, `research.html?id=..&from=mine`): "רכש חדש", "פתח פרויקט" (sketch), "בקשת החזר". The request opens on that source automatically (`actions.html?source=<id>`), no manual choice.
-- **Instead of "הפק דוח":** `finance.html` – spend across all sources by expense type, source and dates. Totals are per currency, never mixed (pure logic in `js/analysis-logic.js`, screen "סטטוס פיננסי").
+- **Instead of "הפק דוח":** `finance.html` ("סטטוס פיננסי", under "האזור שלי"): every transaction from every source and project, laid out like a card statement (pending charges first, then charged ones by month), with filters (search, source, expense type, dates). Totals are per currency, never mixed (pure logic in `js/analysis-logic.js`). The main screen no longer shows recent movements.
 - **Alerts:** the catalog of alert rules is `js/alert-rules.js`, switched on/off in `settings.html` (per browser in the demo). New: money received from a funder, and deadlines shown with the next action (e.g. late funder report).
 - **"הבקשות שלי":** type chips with counts plus a state filter. A research proposal can "פתח סבב אישורים" (illustrative round: dept head, dean, Research Authority, Finance; the Authority owns the real one).
+- **Known gap:** the progress-report-to-funder form (`actions.html?type=report`) lost its entry point when the home action bar was removed. It opens only by direct link until a place is chosen (likely inside external-fund sources).
 - **Not found in the code:** "תקציב קליטה – סולם" – nothing with that name exists in the mockup; confirm which screen was meant.
 
 ## 5. Data sources (all open until the Accounting meeting)
